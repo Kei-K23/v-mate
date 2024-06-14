@@ -6,7 +6,7 @@ export default function HomeScreen() {
   return (
     <View>
       <Text>Home</Text>
-      <Link href={"/about"}>Go to about</Link>
+      <Link href={"/(tabs)/home"}>Go to Home</Link>
     </View>
   );
 }
