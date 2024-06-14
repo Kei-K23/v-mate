@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "v-mate",
+    "name": "V-Mate",
     "slug": "v-mate",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "v-mate",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.keik23.vmate"
     },
     "web": {
       "bundler": "metro",
