@@ -1,19 +1,15 @@
-import Button from "@/components/Button";
+import Button from "@/components/button";
 import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
+import { defaultStyles } from "@/constants/styles";
+import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export default function HomeScreen() {
+  const router = useRouter();
   return (
     <SafeAreaView
       style={{
@@ -26,22 +22,12 @@ export default function HomeScreen() {
           height: "100%",
         }}
       >
-        <View
-          style={{
-            flex: 1,
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingHorizontal: 20,
-            paddingVertical: 20,
-            backgroundColor: colors.primary,
-          }}
-        >
+        <View style={[defaultStyles.layout, { marginTop: 80 }]}>
           <Image
             source={images.logo}
             style={{
-              width: 130,
-              height: 85,
+              width: 120,
+              height: 55,
               alignSelf: "center",
             }}
             resizeMode="contain"
@@ -50,7 +36,7 @@ export default function HomeScreen() {
             source={images.cards}
             style={{
               width: 350,
-              height: 350,
+              height: 270,
               alignSelf: "center",
             }}
             resizeMode="contain"
@@ -96,7 +82,10 @@ export default function HomeScreen() {
             Share your arts, creations or even AI generated videos to the world
             with <Text>V-Mate</Text>
           </Text>
-          <Button title="Continue with Email" handleOnPress={() => {}} />
+          <Button
+            title="Continue with Email"
+            handleOnPress={() => router.push("/(auth)/sign-in")}
+          />
         </View>
       </ScrollView>
       <StatusBar backgroundColor="#161622" style="light" />
