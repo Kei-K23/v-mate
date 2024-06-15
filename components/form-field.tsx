@@ -14,6 +14,7 @@ import {
 type FormFieldProps = {
   label: string;
   placeholder: string;
+  value: string;
   handleOnChange: (text: string) => void;
   keyboardType:
     | "default"
@@ -31,6 +32,7 @@ type FormFieldProps = {
 export default function FormField({
   label,
   placeholder,
+  value,
   handleOnChange,
   keyboardType = "default",
 }: FormFieldProps) {
@@ -46,6 +48,7 @@ export default function FormField({
       <Text style={[styles.label]}>{label}</Text>
       <View>
         <TextInput
+          value={value}
           placeholderTextColor={"gray"}
           placeholder={placeholder}
           onChangeText={handleOnChange}
