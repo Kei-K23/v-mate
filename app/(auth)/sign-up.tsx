@@ -4,7 +4,7 @@ import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
-import { createUser } from "@/lib/appwrite";
+import { UserSignUp } from "@/types";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -12,19 +12,12 @@ import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export default function SignUpScreen() {
   // TODO : Check the state is working fine
-  const [signIn, setSignIn] = useState<{
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }>({
+  const [signIn, setSignIn] = useState<UserSignUp>({
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-
-  const handleOnPress = () => {
-    createUser();
-  };
 
   return (
     <SafeAreaView
@@ -65,6 +58,18 @@ export default function SignUpScreen() {
             Register to V-Mate
           </Text>
           <FormField
+            value={signIn.username}
+            label="Username"
+            placeholder="Enter your username"
+            handleOnChange={(text) =>
+              setSignIn({
+                ...signIn,
+                username: text,
+              })
+            }
+            keyboardType="default"
+          />
+          <FormField
             value={signIn.email}
             label="Email"
             placeholder="Enter your email"
@@ -100,7 +105,7 @@ export default function SignUpScreen() {
             }
             keyboardType="default"
           />
-          <Button title="Sign up" handleOnPress={handleOnPress} />
+          <Button title="Sign up" handleOnPress={() => {}} />
           <View
             style={{
               flexDirection: "row",

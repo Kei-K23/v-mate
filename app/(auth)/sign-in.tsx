@@ -4,6 +4,7 @@ import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
+import { UserSignIn } from "@/types";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -11,10 +12,7 @@ import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export default function SignInScreen() {
   // TODO : Check the state is working fine
-  const [signIn, setSignIn] = useState<{
-    email: string;
-    password: string;
-  }>({
+  const [signIn, setSignIn] = useState<UserSignIn>({
     email: "",
     password: "",
   });
