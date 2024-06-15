@@ -4,6 +4,7 @@ import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
+import { createUser } from "@/lib/appwrite";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
@@ -21,6 +22,10 @@ export default function SignUpScreen() {
     confirmPassword: "",
   });
 
+  const handleOnPress = () => {
+    createUser();
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -37,7 +42,7 @@ export default function SignUpScreen() {
           style={[
             defaultStyles.layout,
             {
-              marginTop: 80,
+              marginTop: 30,
             },
           ]}
         >
@@ -95,7 +100,7 @@ export default function SignUpScreen() {
             }
             keyboardType="default"
           />
-          <Button title="Sign up" handleOnPress={() => {}} />
+          <Button title="Sign up" handleOnPress={handleOnPress} />
           <View
             style={{
               flexDirection: "row",
@@ -114,7 +119,7 @@ export default function SignUpScreen() {
                 color: colors.secondary[100],
                 marginTop: 10,
               }}
-              href={"/(auth)/sign-up"}
+              href={"/(auth)/sign-in"}
             >
               Sign in here!
             </Link>

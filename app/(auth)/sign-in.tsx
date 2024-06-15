@@ -35,7 +35,7 @@ export default function SignInScreen() {
           style={[
             defaultStyles.layout,
             {
-              marginTop: 80,
+              marginTop: 30,
             },
           ]}
         >
