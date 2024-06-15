@@ -4,6 +4,7 @@ import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
+import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
@@ -81,6 +82,29 @@ export default function SignInScreen() {
             keyboardType="default"
           />
           <Button title="Sign in" handleOnPress={() => {}} />
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                marginTop: 10,
+              }}
+            >
+              Don't have an account?{" "}
+            </Text>
+            <Link
+              style={{
+                color: colors.secondary[100],
+                marginTop: 10,
+              }}
+              href={"/(auth)/sign-up"}
+            >
+              Sign up here!
+            </Link>
+          </View>
         </View>
       </ScrollView>
       <StatusBar backgroundColor="#161622" style="light" />
