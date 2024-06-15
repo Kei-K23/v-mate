@@ -1,3 +1,4 @@
+// import { userSessionStorage } from '@/store/userSessionStore';
 import { UserSignIn, UserSignUp } from '@/types';
 import { Account, Avatars, Client, Databases, ID } from 'react-native-appwrite';
 
@@ -49,21 +50,19 @@ export const createUser = async ({ email, password, confirmPassword, username }:
             accountId: newAccount.$id
         });
 
-        // Create user sign in
-        await signInUser({ email, password });
-
         return newUser;
     } catch (e) {
-        console.log(e);
         throw new Error("Something went wrong when sign up");
     }
 }
 
 export const signInUser = async ({ email, password }: UserSignIn) => {
     try {
-        return await account.createEmailPasswordSession(email, password);
+        const userSignIn = await account.createEmailPasswordSession(email, password);
+        // Set user sign in to storage
+        // userSessionStorage.setItem("userSignInSessionStorage", JSON.stringify(userSignIn));
+        return userSignIn
     } catch (e) {
-        console.log(e);
         throw new Error("Something went wrong when sing in");
     }
 }

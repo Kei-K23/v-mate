@@ -4,20 +4,63 @@ import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
+import { createUser, signInUser } from "@/lib/appwrite";
+import useUserSessionStore from "@/store/useUserSessionStore";
+// import { userSessionStorage } from "@/store/userSessionStore";
 import { UserSignUp } from "@/types";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  ToastAndroid,
+  View,
+} from "react-native";
 
 export default function SignUpScreen() {
+  const router = useRouter();
   // TODO : Check the state is working fine
-  const [signIn, setSignIn] = useState<UserSignUp>({
+  const [signUp, setSignUp] = useState<UserSignUp>({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const [isStartTransition, setIsStartTransition] = useState<boolean>(false);
+  const { setDocument, setSession } = useUserSessionStore();
+
+  const handleOnPress = async () => {
+    setIsStartTransition(true);
+    try {
+      const user = await createUser(signUp);
+      setDocument(user);
+
+      const session = await signInUser({
+        email: signUp.email,
+        password: signUp.password,
+      });
+      setSession(session);
+
+      router.push("/(tabs)/home");
+    } catch (e) {
+      if (Platform.OS === "android") {
+        ToastAndroid.show(
+          "Something went wrong when signing up",
+          ToastAndroid.BOTTOM
+        );
+      }
+      if (Platform.OS === "ios") {
+        Alert.alert("Error", "Something went wrong when signing up");
+      }
+    } finally {
+      setIsStartTransition(false);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -58,54 +101,58 @@ export default function SignUpScreen() {
             Register to V-Mate
           </Text>
           <FormField
-            value={signIn.username}
+            value={signUp.username}
             label="Username"
             placeholder="Enter your username"
             handleOnChange={(text) =>
-              setSignIn({
-                ...signIn,
+              setSignUp({
+                ...signUp,
                 username: text,
               })
             }
             keyboardType="default"
           />
           <FormField
-            value={signIn.email}
+            value={signUp.email}
             label="Email"
             placeholder="Enter your email"
             handleOnChange={(text) =>
-              setSignIn({
-                ...signIn,
+              setSignUp({
+                ...signUp,
                 email: text,
               })
             }
             keyboardType="email-address"
           />
           <FormField
-            value={signIn.password}
+            value={signUp.password}
             label="Password"
             placeholder="Enter your password"
             handleOnChange={(text) =>
-              setSignIn({
-                ...signIn,
+              setSignUp({
+                ...signUp,
                 password: text,
               })
             }
             keyboardType="default"
           />
           <FormField
-            value={signIn.confirmPassword}
+            value={signUp.confirmPassword}
             label="Confirm Password"
             placeholder="Enter your confirm password"
             handleOnChange={(text) =>
-              setSignIn({
-                ...signIn,
+              setSignUp({
+                ...signUp,
                 confirmPassword: text,
               })
             }
             keyboardType="default"
           />
-          <Button title="Sign up" handleOnPress={() => {}} />
+          <Button
+            isLoading={isStartTransition}
+            title="Sign up"
+            handleOnPress={handleOnPress}
+          />
           <View
             style={{
               flexDirection: "row",
