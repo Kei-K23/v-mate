@@ -2,14 +2,46 @@ import Button from "@/components/button";
 import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
+import { storageKeys } from "@/constants/storage-key";
 import { defaultStyles } from "@/constants/styles";
+import { getStoreData } from "@/lib/async-storage";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect } from "react";
 import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Models } from "react-native-appwrite";
 
 export default function HomeScreen() {
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const session = await getStoreData<Models.Session>(storageKeys.session);
+        if (session) {
+          if (session?.expire) {
+            const expirationDate = new Date(session.expire);
+            const now = new Date();
+
+            if (expirationDate > now) {
+              console.log("Session is active.");
+              router.replace("/(tabs)/home");
+            } else {
+              console.log("Session has expired.");
+            }
+          } else {
+            console.log("No session expiration date found.");
+          }
+        } else {
+          console.log("No session date found.");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <SafeAreaView
       style={{

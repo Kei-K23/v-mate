@@ -3,10 +3,10 @@ import FormField from "@/components/form-field";
 import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
+import { storageKeys } from "@/constants/storage-key";
 import { defaultStyles } from "@/constants/styles";
 import { createUser, signInUser } from "@/lib/appwrite";
-import useUserSessionStore from "@/store/useUserSessionStore";
-// import { userSessionStorage } from "@/store/userSessionStore";
+import { storeData } from "@/lib/async-storage";
 import { UserSignUp } from "@/types";
 import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -32,19 +32,27 @@ export default function SignUpScreen() {
     confirmPassword: "",
   });
   const [isStartTransition, setIsStartTransition] = useState<boolean>(false);
-  const { setDocument, setSession } = useUserSessionStore();
 
   const handleOnPress = async () => {
+    // TODO : handle proper error
+    if (signUp.email === "" || signUp.password === "" || signUp.username === "")
+      return;
+
+    if (signUp.password !== signUp.confirmPassword) return;
+
     setIsStartTransition(true);
     try {
       const user = await createUser(signUp);
-      setDocument(user);
+      // set to async storage
+      storeData(storageKeys.user, user);
 
       const session = await signInUser({
         email: signUp.email,
         password: signUp.password,
       });
-      setSession(session);
+
+      // set to async storage
+      storeData(storageKeys.session, session);
 
       router.push("/(tabs)/home");
     } catch (e) {
@@ -136,6 +144,7 @@ export default function SignUpScreen() {
             }
             keyboardType="default"
           />
+          {/* TODO :: FIX HERE */}
           <FormField
             value={signUp.confirmPassword}
             label="Confirm Password"

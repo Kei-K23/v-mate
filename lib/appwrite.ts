@@ -1,4 +1,3 @@
-// import { userSessionStorage } from '@/store/userSessionStore';
 import { UserSignIn, UserSignUp } from '@/types';
 import { Account, Avatars, Client, Databases, ID } from 'react-native-appwrite';
 
@@ -20,7 +19,7 @@ client
     .setProject(appwriteConfig.projectId)
     .setPlatform(appwriteConfig.platform);
 
-const account = new Account(client);
+export const account = new Account(client);
 const avatars = new Avatars(client);
 const databases = new Databases(client);
 
@@ -59,10 +58,9 @@ export const createUser = async ({ email, password, confirmPassword, username }:
 export const signInUser = async ({ email, password }: UserSignIn) => {
     try {
         const userSignIn = await account.createEmailPasswordSession(email, password);
-        // Set user sign in to storage
-        // userSessionStorage.setItem("userSignInSessionStorage", JSON.stringify(userSignIn));
         return userSignIn
     } catch (e) {
+        console.log(e);
         throw new Error("Something went wrong when sing in");
     }
 }

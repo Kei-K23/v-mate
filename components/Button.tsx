@@ -35,6 +35,7 @@ export default function Button({
 
   return (
     <TouchableOpacity
+      disabled={isLoading}
       onPress={handleOnPress}
       style={[btnVariant, styles.btn, containerStyle]}
     >

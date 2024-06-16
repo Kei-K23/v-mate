@@ -3,12 +3,24 @@ import FormField from "@/components/form-field";
 import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
+import { storageKeys } from "@/constants/storage-key";
 import { defaultStyles } from "@/constants/styles";
+import { signInUser } from "@/lib/appwrite";
+import { storeData } from "@/lib/async-storage";
 import { UserSignIn } from "@/types";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  ToastAndroid,
+  View,
+} from "react-native";
 
 export default function SignInScreen() {
   // TODO : Check the state is working fine
@@ -16,6 +28,38 @@ export default function SignInScreen() {
     email: "",
     password: "",
   });
+  const [isStartTransition, setIsStartTransition] = useState<boolean>(false);
+  const router = useRouter();
+
+  const handleOnPress = async () => {
+    // TODO : handle proper error
+    if (signIn.email === "" || signIn.password === "") return;
+
+    setIsStartTransition(true);
+    try {
+      const session = await signInUser({
+        email: signIn.email,
+        password: signIn.password,
+      });
+      // set to async storage
+      storeData(storageKeys.session, session);
+      router.push("/(tabs)/home");
+    } catch (e) {
+      console.log(e);
+
+      if (Platform.OS === "android") {
+        ToastAndroid.show(
+          "Something went wrong when signing up",
+          ToastAndroid.BOTTOM
+        );
+      }
+      if (Platform.OS === "ios") {
+        Alert.alert("Error", "Something went wrong when signing up");
+      }
+    } finally {
+      setIsStartTransition(false);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -79,7 +123,11 @@ export default function SignInScreen() {
             }
             keyboardType="default"
           />
-          <Button title="Sign in" handleOnPress={() => {}} />
+          <Button
+            isLoading={isStartTransition}
+            title="Sign in"
+            handleOnPress={handleOnPress}
+          />
           <View
             style={{
               flexDirection: "row",
