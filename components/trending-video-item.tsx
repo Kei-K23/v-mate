@@ -50,7 +50,6 @@ export default function TrendingVideoItem({
           }}
           shouldPlay
           resizeMode={ResizeMode.CONTAIN}
-          useNativeControls
           onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
           style={styles.video}
         />

@@ -132,3 +132,17 @@ export const searchVideosByTitle = async (query: string) => {
         throw new Error(`Something went wrong when getting videos by ${query}`);
     }
 }
+
+export const searchVideosByAccountId = async (accountId: string) => {
+    try {
+        const data = await databases.listDocuments<VideoType>(databaseId, videoCollectionId, [
+            Query.equal("creator", accountId),
+            Query.orderDesc("$createdAt"),
+        ]);
+
+        return data.documents;
+    } catch (e) {
+        console.log(e);
+        throw new Error(`Something went wrong when getting videos by user id ${accountId}`);
+    }
+}

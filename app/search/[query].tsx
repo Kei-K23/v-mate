@@ -15,7 +15,6 @@ import {
   SafeAreaView,
   Text,
   TouchableOpacity,
-  View,
 } from "react-native";
 
 export default function SearchScreen() {

@@ -27,16 +27,19 @@ export default function HomeScreen() {
               console.log("Session is active.");
               router.replace("/(tabs)/home");
             } else {
-              console.log("Session has expired.");
+              router.replace("/(auth)/sign-in");
             }
           } else {
             console.log("No session expiration date found.");
+            router.replace("/(auth)/sign-in");
           }
         } else {
           console.log("No session date found.");
+          router.replace("/(auth)/sign-in");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+        router.replace("/");
       }
     };
 
