@@ -6,7 +6,7 @@ import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
 import useFetchData from "@/hooks/useFetchData";
 import { getLatestVideos, getSignInUser } from "@/lib/appwrite";
-import { Video } from "@/types";
+import { VideoType } from "@/types";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
@@ -111,11 +111,12 @@ export default function HomeScreen() {
                   fontSize: sizes.text,
                   fontWeight: "600",
                   marginTop: 10,
+                  marginBottom: 7,
                 }}
               >
                 Latest videos
               </Text>
-              <TrendingVideos latestVideos={latestVideos} />
+              <TrendingVideos latestVideos={latestVideos as VideoType[]} />
             </View>
           </View>
         )}

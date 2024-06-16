@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
 
 type UseFetchDataType<T> = {
-  fn: () => Promise<T[]>;
+  fn: () => Promise<T | T[]>;
+  singleFetch?: boolean;
 };
 
-export default function useFetchData<T>({ fn }: UseFetchDataType<T>) {
-  const [data, setData] = useState<T[]>([]);
+export default function useFetchData<T>({
+  fn,
+  singleFetch,
+}: UseFetchDataType<T>) {
+  const [data, setData] = useState<T | T[] | undefined>(
+    singleFetch ? undefined : []
+  );
   const [isLoading, setIsLoading] = useState(false);
   const fetchData = async () => {
     setIsLoading(true);

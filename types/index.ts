@@ -10,7 +10,7 @@ export type UserSignIn = {
     email: string;
     password: string;
 }
-export type Video = Models.Document & {
+export type VideoType = Models.Document & {
     documentId: string;
     title: string;
     tag: string;

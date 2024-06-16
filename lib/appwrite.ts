@@ -1,4 +1,4 @@
-import { UserSignIn, UserSignUp, Video } from '@/types';
+import { UserSignIn, UserSignUp, VideoType } from '@/types';
 import { Account, Avatars, Client, Databases, ID, Query } from 'react-native-appwrite';
 
 const appwriteConfig = {
@@ -86,7 +86,7 @@ export const getSignInUser = async () => {
 
 export const getLatestVideos = async () => {
     try {
-        const data = await databases.listDocuments<Video>(databaseId, videoCollectionId, [
+        const data = await databases.listDocuments<VideoType>(databaseId, videoCollectionId, [
             Query.orderDesc("$createdAt"), Query.limit(7)
         ]);
         return data.documents;
