@@ -1,3 +1,5 @@
+import { Models } from "react-native-appwrite";
+
 export type UserSignUp = {
     username: string;
     email: string;
@@ -7,4 +9,13 @@ export type UserSignUp = {
 export type UserSignIn = {
     email: string;
     password: string;
+}
+export type Video = Models.Document & {
+    documentId: string;
+    title: string;
+    tag: string;
+    video: string;
+    thumbnail: string;
+    creator: string;
+    description: string;
 }

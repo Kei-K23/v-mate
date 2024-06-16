@@ -1,9 +1,12 @@
 import SearchInput from "@/components/search-input";
+import TrendingVideos from "@/components/trending-videos";
 import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
-import { getSignInUser } from "@/lib/appwrite";
+import useFetchData from "@/hooks/useFetchData";
+import { getLatestVideos, getSignInUser } from "@/lib/appwrite";
+import { Video } from "@/types";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
@@ -12,11 +15,18 @@ import { Models } from "react-native-appwrite";
 export default function HomeScreen() {
   const [signInUser, setSignInUser] =
     useState<Models.User<Models.Preferences>>();
+  const { data: latestVideos, refreshFn: latestVideosRefreshFn } = useFetchData(
+    {
+      fn: getLatestVideos,
+    }
+  );
 
+  // fetch user information
   useEffect(() => {
     const fetchData = async () => {
       try {
         const singInUserData = await getSignInUser();
+
         setSignInUser(singInUserData);
       } catch (e: any) {
         // TODO: handle error properly
@@ -89,6 +99,24 @@ export default function HomeScreen() {
               </View>
             </View>
             <SearchInput />
+            <View
+              style={{
+                width: "100%",
+                flex: 1,
+              }}
+            >
+              <Text
+                style={{
+                  color: colors.gray[100],
+                  fontSize: sizes.text,
+                  fontWeight: "600",
+                  marginTop: 10,
+                }}
+              >
+                Latest videos
+              </Text>
+              <TrendingVideos latestVideos={latestVideos} />
+            </View>
           </View>
         )}
       />

@@ -1,5 +1,5 @@
-import { UserSignIn, UserSignUp } from '@/types';
-import { Account, Avatars, Client, Databases, ID } from 'react-native-appwrite';
+import { UserSignIn, UserSignUp, Video } from '@/types';
+import { Account, Avatars, Client, Databases, ID, Query } from 'react-native-appwrite';
 
 const appwriteConfig = {
     endpoint: "https://cloud.appwrite.io/v1",
@@ -78,6 +78,18 @@ export const signInUser = async ({ email, password }: UserSignIn) => {
 export const getSignInUser = async () => {
     try {
         return await account.get()
+    } catch (e) {
+        console.log(e);
+        throw new Error("Something went wrong when getting sign in user");
+    }
+}
+
+export const getLatestVideos = async () => {
+    try {
+        const data = await databases.listDocuments<Video>(databaseId, videoCollectionId, [
+            Query.orderDesc("$createdAt"), Query.limit(7)
+        ]);
+        return data.documents;
     } catch (e) {
         console.log(e);
         throw new Error("Something went wrong when getting sign in user");
