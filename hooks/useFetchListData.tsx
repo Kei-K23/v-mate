@@ -1,22 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-type UseFetchDataType<T> = {
-  fn: () => Promise<T | T[]>;
-  singleFetch?: boolean;
+type UseFetchListDataType<T> = {
+  fn: () => Promise<T[]>;
 };
 
-export default function useFetchData<T>({
-  fn,
-  singleFetch,
-}: UseFetchDataType<T>) {
-  const [data, setData] = useState<T | T[] | undefined>(
-    singleFetch ? undefined : []
-  );
+export default function useFetchListData<T>({ fn }: UseFetchListDataType<T>) {
+  const [data, setData] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const fetchData = async () => {
     setIsLoading(true);
     try {
       const res = await fn();
+      console.log(res);
+
       setData(res);
     } catch (e: any) {
       // TODO: handle error properly

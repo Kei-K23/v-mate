@@ -1,6 +1,10 @@
 import React from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function CreateScreen() {
-  return <View></View>;
+  return (
+    <View>
+      <Text>Crate</Text>
+    </View>
+  );
 }

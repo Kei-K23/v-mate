@@ -1,12 +1,14 @@
+import NotFound from "@/components/not-found";
 import SearchInput from "@/components/search-input";
 import TrendingVideos from "@/components/trending-videos";
+import VideoCard from "@/components/video-card";
 import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
-import useFetchData from "@/hooks/useFetchData";
-import { getLatestVideos, getSignInUser } from "@/lib/appwrite";
-import { VideoType } from "@/types";
+import useFetchListData from "@/hooks/useFetchListData";
+import { getAllVideos, getLatestVideos, getSignInUser } from "@/lib/appwrite";
+import { UserType, VideoType } from "@/types";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
@@ -15,11 +17,13 @@ import { Models } from "react-native-appwrite";
 export default function HomeScreen() {
   const [signInUser, setSignInUser] =
     useState<Models.User<Models.Preferences>>();
-  const { data: latestVideos, refreshFn: latestVideosRefreshFn } = useFetchData(
-    {
+  const { data: latestVideos, refreshFn: latestVideosRefreshFn } =
+    useFetchListData({
       fn: getLatestVideos,
-    }
-  );
+    });
+  // const { data: videos, refreshFn: videosRefreshFn } = useFetchListData({
+  //   fn: getAllVideos,
+  // });
 
   // fetch user information
   useEffect(() => {
@@ -49,9 +53,10 @@ export default function HomeScreen() {
       ]}
     >
       <FlatList
-        data={[{ id: 1 }, { id: 2 }, { id: 3 }]}
+        data={[]}
         renderItem={({ item }) => (
-          <Text style={{ color: "#fff" }}>{item.id}</Text>
+          // TODO :: handle type properly
+          <VideoCard item={item} />
         )}
         ListHeaderComponent={() => (
           <View
@@ -119,6 +124,13 @@ export default function HomeScreen() {
               <TrendingVideos latestVideos={latestVideos as VideoType[]} />
             </View>
           </View>
+        )}
+        ListEmptyComponent={() => (
+          <NotFound
+            title="No video found"
+            description="No video created yet! You can be first creator. Create your video!"
+            url="/(tabs)/create"
+          />
         )}
       />
       <StatusBar backgroundColor="#161622" style="light" />

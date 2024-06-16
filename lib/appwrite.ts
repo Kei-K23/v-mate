@@ -1,4 +1,4 @@
-import { UserSignIn, UserSignUp, VideoType } from '@/types';
+import { UserSignIn, UserSignUp, UserType, VideoType } from '@/types';
 import { Account, Avatars, Client, Databases, ID, Query } from 'react-native-appwrite';
 
 const appwriteConfig = {
@@ -92,6 +92,30 @@ export const getLatestVideos = async () => {
         return data.documents;
     } catch (e) {
         console.log(e);
-        throw new Error("Something went wrong when getting sign in user");
+        throw new Error("Something went wrong when getting latest videos");
+    }
+}
+
+export const getAllVideos = async () => {
+    try {
+        const data = await databases.listDocuments<VideoType>(databaseId, videoCollectionId, [
+            Query.orderDesc("$createdAt")
+        ]);
+        return data.documents;
+    } catch (e) {
+        console.log(e);
+        throw new Error("Something went wrong when getting videos");
+    }
+}
+
+export const getUser = async (id: string) => {
+    try {
+        const data = await databases.listDocuments<UserType>(databaseId, userCollectionId, [
+            Query.equal("accountId", id)
+        ]);
+        return data.documents[0];
+    } catch (e) {
+        console.log(e);
+        throw new Error("Something went wrong when getting videos");
     }
 }

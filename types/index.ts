@@ -19,3 +19,11 @@ export type VideoType = Models.Document & {
     creator: string;
     description: string;
 }
+export type UserType = Models.Document & {
+    documentId: string;
+    username: string;
+    email: string;
+    avatar: string;
+    accountId: string;
+    password: string
+}
