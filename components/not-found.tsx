@@ -10,9 +10,15 @@ type NotFoundProps = {
   title: string;
   description: string;
   url: string;
+  btnText: string;
 };
 
-export default function NotFound({ title, description, url }: NotFoundProps) {
+export default function NotFound({
+  title,
+  description,
+  url,
+  btnText,
+}: NotFoundProps) {
   return (
     <View
       style={{
@@ -57,7 +63,7 @@ export default function NotFound({ title, description, url }: NotFoundProps) {
           {description}
         </Text>
       </View>
-      <Button title="Create video" handleOnPress={() => router.replace(url)} />
+      <Button title={btnText} handleOnPress={() => router.replace(url)} />
     </View>
   );
 }

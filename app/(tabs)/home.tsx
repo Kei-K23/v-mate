@@ -88,7 +88,7 @@ export default function HomeScreen() {
                 <Text
                   style={{
                     color: colors.gray[100],
-                    fontSize: sizes.textBold,
+                    fontSize: sizes.text,
                     fontWeight: "600",
                   }}
                 >
@@ -144,6 +144,7 @@ export default function HomeScreen() {
           <NotFound
             title="No video found"
             description="No video created yet! You can be first creator. Create your video!"
+            btnText="Create video"
             url="/(tabs)/create"
           />
         )}

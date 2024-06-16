@@ -1,6 +1,7 @@
 import { icons } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Image,
@@ -10,9 +11,16 @@ import {
   View,
 } from "react-native";
 
-export default function SearchInput() {
+type SearchInputProps = {
+  query?: string;
+};
+export default function SearchInput({ query }: SearchInputProps) {
   const [isFocused, setIsFocused] = useState(false);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string>(query ?? "");
+
+  const handleOnPress = () => {
+    router.push(`/search/${search}`);
+  };
   return (
     <View
       style={{
@@ -31,7 +39,7 @@ export default function SearchInput() {
       />
 
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={handleOnPress}
         style={{
           position: "absolute",
           right: 10,

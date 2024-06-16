@@ -1,3 +1,4 @@
+import { colors } from "@/constants/colors";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
@@ -39,6 +40,9 @@ export default function RootLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
+        headerStyle: {
+          backgroundColor: colors.primary,
+        },
       }}
     >
       <Stack.Screen name="index" />
