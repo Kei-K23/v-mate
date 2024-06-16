@@ -38,7 +38,15 @@ export default function SignUpScreen() {
     if (signUp.email === "" || signUp.password === "" || signUp.username === "")
       return;
 
-    if (signUp.password !== signUp.confirmPassword) return;
+    if (signUp.password !== signUp.confirmPassword) {
+      if (Platform.OS === "android") {
+        ToastAndroid.show("Password doesn't match", ToastAndroid.BOTTOM);
+      }
+      if (Platform.OS === "ios") {
+        Alert.alert("Error", "Password doesn't match");
+      }
+      return;
+    }
 
     setIsStartTransition(true);
     try {
@@ -144,7 +152,6 @@ export default function SignUpScreen() {
             }
             keyboardType="default"
           />
-          {/* TODO :: FIX HERE */}
           <FormField
             value={signUp.confirmPassword}
             label="Confirm Password"

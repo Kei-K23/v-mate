@@ -1,7 +1,7 @@
 import { UserSignIn, UserSignUp } from '@/types';
 import { Account, Avatars, Client, Databases, ID } from 'react-native-appwrite';
 
-export const appwriteConfig = {
+const appwriteConfig = {
     endpoint: "https://cloud.appwrite.io/v1",
     platform: "com.kei.vmate",
     projectId: "666d040d003a724c06a7",
@@ -10,6 +10,16 @@ export const appwriteConfig = {
     videoCollectionId: "666d05970032709e0e44",
     storageId: "666d07f8003a81b97319"
 }
+
+const {
+    endpoint,
+    platform,
+    projectId,
+    databaseId,
+    userCollectionId,
+    videoCollectionId,
+    storageId,
+} = appwriteConfig
 
 // Init your React Native SDK
 const client = new Client();
@@ -62,5 +72,14 @@ export const signInUser = async ({ email, password }: UserSignIn) => {
     } catch (e) {
         console.log(e);
         throw new Error("Something went wrong when sing in");
+    }
+}
+
+export const getSignInUser = async () => {
+    try {
+        return await account.get()
+    } catch (e) {
+        console.log(e);
+        throw new Error("Something went wrong when getting sign in user");
     }
 }

@@ -57,9 +57,12 @@ export default function FormField({
           style={[styles.input, isFocused && styles.inputFocused]}
           keyboardType={keyboardType}
           selectionColor={colors.secondary[100]}
-          secureTextEntry={label === "Password" && !isTextVisible}
+          secureTextEntry={
+            (label === "Password" || label === "Confirm Password") &&
+            !isTextVisible
+          }
         />
-        {label === "Password" && (
+        {(label === "Password" || label === "Confirm Password") && (
           <TouchableOpacity
             onPress={() => setIsTextVisible(!isTextVisible)}
             style={{
