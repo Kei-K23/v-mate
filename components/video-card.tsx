@@ -1,4 +1,5 @@
 import { icons } from "@/constants";
+import { colors } from "@/constants/colors";
 import { VideoType } from "@/types";
 import { AVPlaybackStatus, ResizeMode, Video } from "expo-av";
 import React, { useState } from "react";
@@ -6,7 +7,6 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 
 type VideoCardProps = {
   item: VideoType;
-  // avatar: string;
 };
 export default function VideoCard({ item }: VideoCardProps) {
   const [play, setPlay] = useState(false);
@@ -25,21 +25,72 @@ export default function VideoCard({ item }: VideoCardProps) {
   };
 
   return (
-    <View>
-      <View>
-        <View>
+    <View
+      style={{
+        marginBottom: 50,
+      }}
+    >
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 10,
+          marginBottom: 17,
+        }}
+      >
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
           <View>
-            <Image source={{ uri: "" }} resizeMode="cover" />
+            <Image
+              source={{ uri: item.creator.avatar }}
+              resizeMode="cover"
+              style={{
+                width: 50,
+                height: 50,
+                borderWidth: 1,
+                borderColor: colors.secondary[200],
+                borderRadius: 7,
+              }}
+            />
           </View>
 
           <View>
-            <Text numberOfLines={1}>{item.title}</Text>
-            <Text numberOfLines={1}>{item.creator}</Text>
+            <Text
+              style={{
+                color: "#fff",
+              }}
+              numberOfLines={1}
+            >
+              {item.title}
+            </Text>
+            <Text
+              style={{
+                color: colors.gray[100],
+              }}
+              numberOfLines={1}
+            >
+              {item.creator.username}
+            </Text>
           </View>
         </View>
 
         <View>
-          <Image source={icons.menu} resizeMode="contain" />
+          <Image
+            source={icons.menu}
+            resizeMode="contain"
+            style={{
+              width: 17,
+              height: 17,
+            }}
+          />
         </View>
       </View>
 
@@ -52,10 +103,37 @@ export default function VideoCard({ item }: VideoCardProps) {
           onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
         />
       ) : (
-        <TouchableOpacity activeOpacity={0.7} onPress={() => setPlay(true)}>
-          <Image source={{ uri: item.thumbnail }} resizeMode="cover" />
-
-          <Image source={icons.play} resizeMode="contain" />
+        <TouchableOpacity
+          style={{
+            position: "relative",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: 200,
+          }}
+          activeOpacity={0.7}
+          onPress={() => setPlay(true)}
+        >
+          <Image
+            source={{ uri: item.thumbnail }}
+            resizeMode="cover"
+            style={{
+              width: "100%",
+              height: 200,
+              borderRadius: 10,
+            }}
+          />
+          <Image
+            source={icons.play}
+            resizeMode="contain"
+            style={{
+              width: 45,
+              height: 45,
+              position: "absolute",
+              tintColor: "#fff",
+            }}
+          />
         </TouchableOpacity>
       )}
     </View>

@@ -8,22 +8,36 @@ import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
 import useFetchListData from "@/hooks/useFetchListData";
 import { getAllVideos, getLatestVideos, getSignInUser } from "@/lib/appwrite";
-import { UserType, VideoType } from "@/types";
+import { VideoType } from "@/types";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import { FlatList, Image, SafeAreaView, Text, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  FlatList,
+  Image,
+  RefreshControl,
+  SafeAreaView,
+  Text,
+  View,
+} from "react-native";
 import { Models } from "react-native-appwrite";
 
 export default function HomeScreen() {
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [signInUser, setSignInUser] =
     useState<Models.User<Models.Preferences>>();
   const { data: latestVideos, refreshFn: latestVideosRefreshFn } =
     useFetchListData({
       fn: getLatestVideos,
     });
-  // const { data: videos, refreshFn: videosRefreshFn } = useFetchListData({
-  //   fn: getAllVideos,
-  // });
+  const { data: videos, refreshFn: videosRefreshFn } = useFetchListData({
+    fn: getAllVideos,
+  });
+
+  const onRefresh = useCallback(async (fn: () => Promise<void>) => {
+    setIsRefreshing(true);
+    await fn();
+    setIsRefreshing(false);
+  }, []);
 
   // fetch user information
   useEffect(() => {
@@ -53,15 +67,12 @@ export default function HomeScreen() {
       ]}
     >
       <FlatList
-        data={[]}
-        renderItem={({ item }) => (
-          // TODO :: handle type properly
-          <VideoCard item={item} />
-        )}
+        data={videos}
+        renderItem={({ item }) => <VideoCard item={item} />}
         ListHeaderComponent={() => (
           <View
             style={{
-              marginTop: 30,
+              marginVertical: 30,
             }}
           >
             <View
@@ -77,6 +88,7 @@ export default function HomeScreen() {
                 <Text
                   style={{
                     color: colors.gray[100],
+                    fontSize: sizes.textBold,
                     fontWeight: "600",
                   }}
                 >
@@ -121,7 +133,10 @@ export default function HomeScreen() {
               >
                 Latest videos
               </Text>
-              <TrendingVideos latestVideos={latestVideos as VideoType[]} />
+              <TrendingVideos
+                latestVideosRefreshFn={latestVideosRefreshFn}
+                latestVideos={latestVideos as VideoType[]}
+              />
             </View>
           </View>
         )}
@@ -132,6 +147,13 @@ export default function HomeScreen() {
             url="/(tabs)/create"
           />
         )}
+        keyExtractor={(item) => item.$id}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={() => onRefresh(videosRefreshFn)}
+          />
+        }
       />
       <StatusBar backgroundColor="#161622" style="light" />
     </SafeAreaView>

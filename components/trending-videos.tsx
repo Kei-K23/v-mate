@@ -1,47 +1,8 @@
-// import { VideoType } from "@/types";
-// import React, { useState } from "react";
-// import { FlatList, ViewToken } from "react-native";
-// import TrendingVideoItem from "./trending-video-item";
-
-// type TrendingVideosProps = {
-//   latestVideos: VideoType[];
-// };
-// export default function TrendingVideos({ latestVideos }: TrendingVideosProps) {
-//   const [activeItem, setActiveItem] = useState(latestVideos[0]);
-
-//   const viewableItemsChanged = ({
-//     viewableItems,
-//   }: {
-//     viewableItems: ViewToken<VideoType>[];
-//     changed: ViewToken<VideoType>[];
-//   }) => {
-//     if (viewableItems.length > 0) {
-//       console.log(viewableItems[0].item.title);
-
-//       setActiveItem(viewableItems[0].item);
-//     }
-//   };
-//   return (
-//     <FlatList
-//       data={latestVideos}
-//       keyExtractor={(item) => item.documentId}
-//       renderItem={({ item }) => (
-//         <TrendingVideoItem item={item} activeItem={activeItem} />
-//       )}
-//       horizontal
-//       onViewableItemsChanged={viewableItemsChanged}
-//       viewabilityConfig={{
-//         itemVisiblePercentThreshold: 70,
-//       }}
-//       contentOffset={{ x: 100, y: 0 }}
-//     />
-//   );
-// }
-
 import { VideoType } from "@/types";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   FlatList,
+  RefreshControl,
   ViewToken,
   ViewabilityConfigCallbackPairs,
 } from "react-native";
@@ -49,10 +10,15 @@ import TrendingVideoItem from "./trending-video-item";
 
 type TrendingVideosProps = {
   latestVideos: VideoType[];
+  latestVideosRefreshFn: () => Promise<void>;
 };
 
-export default function TrendingVideos({ latestVideos }: TrendingVideosProps) {
+export default function TrendingVideos({
+  latestVideos,
+  latestVideosRefreshFn,
+}: TrendingVideosProps) {
   const [activeItem, setActiveItem] = useState(latestVideos[0]);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   const viewabilityConfig = useRef({
     itemVisiblePercentThreshold: 70,
@@ -61,7 +27,6 @@ export default function TrendingVideos({ latestVideos }: TrendingVideosProps) {
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (viewableItems.length > 0) {
-        console.log(viewableItems[0].item.title);
         setActiveItem(viewableItems[0].item);
       }
     }
@@ -76,10 +41,16 @@ export default function TrendingVideos({ latestVideos }: TrendingVideosProps) {
     ]
   );
 
+  const onRefresh = useCallback(async (fn: () => Promise<void>) => {
+    setIsRefreshing(true);
+    await fn();
+    setIsRefreshing(false);
+  }, []);
+
   return (
     <FlatList
       data={latestVideos}
-      keyExtractor={(item) => item.documentId}
+      keyExtractor={(item) => item.$id}
       renderItem={({ item }) => (
         <TrendingVideoItem item={item} activeItem={activeItem} />
       )}
@@ -87,6 +58,12 @@ export default function TrendingVideos({ latestVideos }: TrendingVideosProps) {
       showsHorizontalScrollIndicator={false}
       viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
       contentOffset={{ x: 100, y: 0 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={() => onRefresh(latestVideosRefreshFn)}
+        />
+      }
     />
   );
 }

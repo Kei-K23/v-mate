@@ -7,31 +7,13 @@ import {
   ImageBackground,
   TouchableOpacity,
   StyleSheet,
+  View,
 } from "react-native";
-import * as Animatable from "react-native-animatable";
 
 type TrendingVideoItemProps = {
   item: VideoType;
   activeItem: VideoType;
 };
-const zoomIn = {
-  0: {
-    scale: 0.9,
-  },
-  1: {
-    scale: 1,
-  },
-};
-
-const zoomOut = {
-  0: {
-    scale: 1,
-  },
-  1: {
-    scale: 0.9,
-  },
-};
-
 export default function TrendingVideoItem({
   item,
   activeItem,
@@ -52,7 +34,7 @@ export default function TrendingVideoItem({
   };
 
   return (
-    <Animatable.View
+    <View
       style={[
         styles.container,
         {
@@ -60,8 +42,6 @@ export default function TrendingVideoItem({
           borderRadius: 10,
         },
       ]}
-      animation={activeItem.documentId === item.documentId ? zoomIn : zoomOut}
-      duration={500}
     >
       {play ? (
         <Video
@@ -90,7 +70,7 @@ export default function TrendingVideoItem({
           <Image source={icons.play} style={styles.playIcon} />
         </TouchableOpacity>
       )}
-    </Animatable.View>
+    </View>
   );
 }
 

@@ -11,7 +11,6 @@ export default function useFetchListData<T>({ fn }: UseFetchListDataType<T>) {
     setIsLoading(true);
     try {
       const res = await fn();
-      console.log(res);
 
       setData(res);
     } catch (e: any) {
