@@ -5,6 +5,7 @@ import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { storageKeys } from "@/constants/storage-key";
 import { defaultStyles } from "@/constants/styles";
+import useShowErrorAlert from "@/hooks/show-error-alert";
 import { createUser, signInUser } from "@/lib/appwrite";
 import { storeData } from "@/lib/async-storage";
 import { UserSignUp } from "@/types";
@@ -23,6 +24,7 @@ import {
 } from "react-native";
 
 export default function SignUpScreen() {
+  const showAlert = useShowErrorAlert();
   const router = useRouter();
   // TODO : Check the state is working fine
   const [signUp, setSignUp] = useState<UserSignUp>({
@@ -63,16 +65,10 @@ export default function SignUpScreen() {
       storeData(storageKeys.session, session);
 
       router.push("/(tabs)/home");
-    } catch (e) {
-      if (Platform.OS === "android") {
-        ToastAndroid.show(
-          "Something went wrong when signing up",
-          ToastAndroid.BOTTOM
-        );
-      }
-      if (Platform.OS === "ios") {
-        Alert.alert("Error", "Something went wrong when signing up");
-      }
+    } catch (e: any) {
+      showAlert({
+        message: "Something went wrong when signing up",
+      });
     } finally {
       setIsStartTransition(false);
     }

@@ -16,6 +16,7 @@ export type VideoType = Models.Document & {
     tag: string;
     video: string;
     thumbnail: string;
+    description: string;
     creator: {
         documentId: string;
         username: string;
@@ -24,7 +25,6 @@ export type VideoType = Models.Document & {
         accountId: string;
         password: string
     };
-    description: string;
 }
 export type UserType = Models.Document & {
     documentId: string;
