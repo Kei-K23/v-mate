@@ -1,12 +1,16 @@
+import Button from "@/components/button";
 import FormField from "@/components/form-field";
 import { icons } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
 import useShowErrorAlert from "@/hooks/show-error-alert";
+import { createNewVideo, getSignInUser } from "@/lib/appwrite";
+import { CreateVideoType } from "@/types";
 import { ResizeMode, Video } from "expo-av";
-import { DocumentPickerAsset, getDocumentAsync } from "expo-document-picker";
-import React, { useState } from "react";
+import { getDocumentAsync } from "expo-document-picker";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   ScrollView,
@@ -15,22 +19,57 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Models } from "react-native-appwrite";
 
 export default function CreateScreen() {
   const showAlert = useShowErrorAlert();
-  const [createVideo, setCreateVideo] = useState<{
-    title: string;
-    tag: string;
-    video: DocumentPickerAsset | null;
-    thumbnail: DocumentPickerAsset | null;
-    description: string;
-  }>({
+  const [createVideo, setCreateVideo] = useState<CreateVideoType>({
     title: "",
     tag: "",
     video: null,
     thumbnail: null,
     description: "",
   });
+  const [signInUser, setSignInUser] =
+    useState<Models.User<Models.Preferences>>();
+
+  const handleOnPress = async () => {
+    if (
+      createVideo.title === "" ||
+      createVideo.video === null ||
+      createVideo.thumbnail === null ||
+      createVideo.tag === ""
+    ) {
+      showAlert({
+        message: "Please fill in all fields!",
+      });
+      return;
+    }
+
+    if (!signInUser) {
+      showAlert({
+        message: "User not found to create new video!",
+      });
+      return;
+    }
+
+    try {
+      await createNewVideo({
+        ...createVideo,
+        userId: signInUser.$id,
+      });
+
+      showAlert({
+        message: "Success! Created new video!",
+        title: "Success",
+      });
+      router.replace("/(tabs)/home");
+    } catch (e: any) {
+      showAlert({
+        message: "Error when creating video",
+      });
+    }
+  };
 
   const openPicker = async (type: "video" | "image") => {
     const result = await getDocumentAsync({
@@ -66,6 +105,23 @@ export default function CreateScreen() {
       });
     }
   };
+
+  // fetch user information
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const singInUserData = await getSignInUser();
+
+        setSignInUser(singInUserData);
+      } catch (e: any) {
+        showAlert({
+          message: "Error when fetching user information",
+        });
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <ScrollView
@@ -223,7 +279,7 @@ export default function CreateScreen() {
           handleOnChange={(text) =>
             setCreateVideo({
               ...createVideo,
-              title: text,
+              tag: text,
             })
           }
           keyboardType="default"
@@ -238,7 +294,7 @@ export default function CreateScreen() {
         </Text>
       </View>
       <FormField
-        value={createVideo.title}
+        value={createVideo.description}
         label="Description"
         placeholder="Enter video description"
         handleOnChange={(text) =>
@@ -248,6 +304,12 @@ export default function CreateScreen() {
           })
         }
         keyboardType="default"
+      />
+      <Button title="Create" handleOnPress={handleOnPress} />
+      <View
+        style={{
+          height: 50,
+        }}
       />
     </ScrollView>
   );

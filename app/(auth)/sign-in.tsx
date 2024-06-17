@@ -5,6 +5,7 @@ import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { storageKeys } from "@/constants/storage-key";
 import { defaultStyles } from "@/constants/styles";
+import useShowErrorAlert from "@/hooks/show-error-alert";
 import { signInUser } from "@/lib/appwrite";
 import { storeData } from "@/lib/async-storage";
 import { UserSignIn } from "@/types";
@@ -23,6 +24,8 @@ import {
 } from "react-native";
 
 export default function SignInScreen() {
+  const showAlert = useShowErrorAlert();
+
   // TODO : Check the state is working fine
   const [signIn, setSignIn] = useState<UserSignIn>({
     email: "",
@@ -33,7 +36,12 @@ export default function SignInScreen() {
 
   const handleOnPress = async () => {
     // TODO : handle proper error
-    if (signIn.email === "" || signIn.password === "") return;
+    if (signIn.email === "" || signIn.password === "") {
+      showAlert({
+        message: "Please fill in all fields!",
+      });
+      return;
+    }
 
     setIsStartTransition(true);
     try {

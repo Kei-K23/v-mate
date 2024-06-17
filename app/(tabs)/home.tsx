@@ -6,6 +6,7 @@ import { images } from "@/constants";
 import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
+import useShowErrorAlert from "@/hooks/show-error-alert";
 import useFetchListData from "@/hooks/useFetchListData";
 import { getAllVideos, getLatestVideos, getSignInUser } from "@/lib/appwrite";
 import { VideoType } from "@/types";
@@ -22,6 +23,7 @@ import {
 import { Models } from "react-native-appwrite";
 
 export default function HomeScreen() {
+  const showAlert = useShowErrorAlert();
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [signInUser, setSignInUser] =
     useState<Models.User<Models.Preferences>>();
@@ -47,8 +49,9 @@ export default function HomeScreen() {
 
         setSignInUser(singInUserData);
       } catch (e: any) {
-        // TODO: handle error properly
-        console.log(e);
+        showAlert({
+          message: "Error when fetching user information",
+        });
       }
     };
 

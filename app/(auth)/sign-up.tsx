@@ -37,8 +37,16 @@ export default function SignUpScreen() {
 
   const handleOnPress = async () => {
     // TODO : handle proper error
-    if (signUp.email === "" || signUp.password === "" || signUp.username === "")
+    if (
+      signUp.email === "" ||
+      signUp.password === "" ||
+      signUp.username === ""
+    ) {
+      showAlert({
+        message: "Please fill in all fields!",
+      });
       return;
+    }
 
     if (signUp.password !== signUp.confirmPassword) {
       if (Platform.OS === "android") {

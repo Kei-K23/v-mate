@@ -7,7 +7,6 @@ type ButtonProps = {
   title: string;
   handleOnPress: () => void;
   containerStyle?: {};
-  textStyle?: string;
   isLoading?: boolean;
   variant?: "primary" | "gray";
 };
@@ -16,7 +15,6 @@ export default function Button({
   title,
   handleOnPress,
   containerStyle,
-  textStyle,
   isLoading,
   variant = "primary",
 }: ButtonProps) {

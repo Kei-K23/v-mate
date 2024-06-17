@@ -1,3 +1,4 @@
+import { DocumentPickerAsset } from "expo-document-picker";
 import { Models } from "react-native-appwrite";
 
 export type UserSignUp = {
@@ -33,4 +34,11 @@ export type UserType = Models.Document & {
     avatar: string;
     accountId: string;
     password: string
+}
+export type CreateVideoType = {
+    title: string;
+    tag: string;
+    video: DocumentPickerAsset | null;
+    thumbnail: DocumentPickerAsset | null;
+    description: string;
 }
