@@ -98,7 +98,7 @@ export default function VideoCard({
 
         <DropdownMenu
           isOwner={item.creator.accountId === userId}
-          id={item.$id}
+          video={item}
           onRefresh={onRefresh}
           videosRefreshFn={videosRefreshFn}
         />

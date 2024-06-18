@@ -1,8 +1,9 @@
+import { VideoType } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Models } from 'react-native-appwrite';
 
 
-export const storeData = async (key: string, value: Models.Document | Models.Session) => {
+export const storeData = async (key: string, value: Models.Document | Models.Session | VideoType[]) => {
     try {
         const jsonValue = JSON.stringify(value);
         await AsyncStorage.setItem(key, jsonValue);

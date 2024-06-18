@@ -30,10 +30,13 @@ export default function ProfileScreen() {
   const [user, setUser] = useState<UserType>();
   const [videos, setVideos] = useState<VideoType[]>([]);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [savedVideosInStorage, setSavedVideosInStorage] = useState<VideoType[]>(
+    []
+  );
 
-  const onRefresh = useCallback(async () => {
+  const onRefresh = useCallback(async (fn: () => Promise<void>) => {
     setIsRefreshing(true);
-    await fetchData();
+    await fn();
     setIsRefreshing(false);
   }, []);
 
@@ -45,6 +48,11 @@ export default function ProfileScreen() {
 
       const videosData = await searchVideosByAccountId(user.$id);
       setVideos(videosData);
+
+      const storedBookmarkVideos = await getStoreData<VideoType[]>(
+        storageKeys.bookmark
+      );
+      setSavedVideosInStorage(storedBookmarkVideos ?? []);
     } catch (e: any) {
       // TODO: handle error properly
       console.log(e);
@@ -87,7 +95,14 @@ export default function ProfileScreen() {
           marginTop: 20,
         }}
         data={videos}
-        renderItem={({ item }) => <VideoCard item={item} />}
+        renderItem={({ item }) => (
+          <VideoCard
+            item={item}
+            onRefresh={onRefresh}
+            userId={user?.$id!}
+            videosRefreshFn={fetchData}
+          />
+        )}
         keyExtractor={(item) => item.$id}
         ListEmptyComponent={() => (
           <NotFound
@@ -98,7 +113,10 @@ export default function ProfileScreen() {
           />
         )}
         refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={() => onRefresh(fetchData)}
+          />
         }
         ListHeaderComponent={() => (
           <View>
@@ -163,7 +181,15 @@ export default function ProfileScreen() {
               {user?.username}
             </Text>
 
-            <View>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 30,
+              }}
+            >
               <View
                 style={{
                   display: "flex",
@@ -189,6 +215,33 @@ export default function ProfileScreen() {
                   }}
                 >
                   Videos
+                </Text>
+              </View>
+              <View
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 10,
+                  marginBottom: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontWeight: "800",
+                    fontSize: sizes.textBold,
+                  }}
+                >
+                  {savedVideosInStorage.length}
+                </Text>
+                <Text
+                  style={{
+                    color: colors.gray[100],
+                    fontWeight: "600",
+                  }}
+                >
+                  Bookmark
                 </Text>
               </View>
             </View>

@@ -1,38 +1,97 @@
 import { icons } from "@/constants";
 import { colors } from "@/constants/colors";
+import { storageKeys } from "@/constants/storage-key";
 import useShowErrorAlert from "@/hooks/show-error-alert";
 import { deleteTheVideo } from "@/lib/appwrite";
+import { getStoreData, storeData } from "@/lib/async-storage";
+import { VideoType } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 type DropdownMenuProps = {
   isOwner: boolean;
-  id: string;
+  video: VideoType;
   onRefresh: (fn: () => Promise<void>) => Promise<void>;
   videosRefreshFn: () => Promise<void>;
 };
 
 export default function DropdownMenu({
   isOwner,
-  id,
+  video,
   onRefresh,
   videosRefreshFn,
 }: DropdownMenuProps) {
   const [show, setShow] = useState<boolean>(false);
   const showAlert = useShowErrorAlert();
+  const [savedVideosInStorage, setSavedVideosInStorage] = useState<VideoType[]>(
+    []
+  );
+
+  const saveTheVideoInStorage = async () => {
+    try {
+      if (!savedVideosInStorage?.length) {
+        const bookmarkVideos: VideoType[] = [];
+        bookmarkVideos.push(video);
+        await storeData(storageKeys.bookmark, bookmarkVideos);
+
+        // update the current state of storage video
+        setSavedVideosInStorage(bookmarkVideos);
+      } else {
+        const bookmarkVideos: VideoType[] = savedVideosInStorage;
+        bookmarkVideos.push(video);
+        await storeData(storageKeys.bookmark, bookmarkVideos);
+
+        // update the current state of storage video
+        setSavedVideosInStorage(bookmarkVideos);
+      }
+      showAlert({
+        message: "Successfully saved bookmark video",
+        title: "Success",
+      });
+    } catch (e: any) {
+      showAlert({
+        message: "Error when saving bookmark video",
+      });
+    }
+  };
+
+  const removeTheVideoInStorage = async () => {
+    try {
+      if (savedVideosInStorage?.length) {
+        const bookmarkVideos: VideoType[] = savedVideosInStorage;
+        const newBookmarkVideos = bookmarkVideos.filter(
+          (v) => v.$id !== video.$id
+        );
+        await storeData(storageKeys.bookmark, newBookmarkVideos);
+        // update the current state of storage video
+        setSavedVideosInStorage(newBookmarkVideos);
+      }
+      showAlert({
+        message: "Successfully unsaved video",
+        title: "Success",
+      });
+    } catch (e: any) {
+      showAlert({
+        message: "Error when removing bookmark video",
+      });
+    }
+  };
 
   const handleOnPress = async (type: "delete" | "save" | "edit") => {
     try {
       switch (type) {
         case "delete":
-          await deleteTheVideo(id);
+          await deleteTheVideo(video.$id);
           setShow(false);
           onRefresh(videosRefreshFn);
+          showAlert({
+            message: "Successfully delete the video",
+            title: "Success",
+          });
           break;
         case "save":
-          onRefresh(videosRefreshFn);
+          await saveTheVideoInStorage();
           setShow(false);
           break;
         case "edit":
@@ -48,6 +107,26 @@ export default function DropdownMenu({
         message: "Something went wrong",
       });
     }
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const storedBookmarkVideos = await getStoreData<VideoType[]>(
+          storageKeys.bookmark
+        );
+        setSavedVideosInStorage(storedBookmarkVideos ?? []);
+      } catch (e) {
+        console.log(e);
+        showAlert({
+          message: "Something went wrong",
+        });
+      }
+    })();
+  }, []);
+
+  const videoExistInStorage = () => {
+    return savedVideosInStorage.some((item) => item.$id === video.$id);
   };
 
   return (
@@ -87,7 +166,11 @@ export default function DropdownMenu({
               gap: 5,
               borderColor: colors.gray[200],
             }}
-            onPress={() => handleOnPress("save")}
+            onPress={() =>
+              videoExistInStorage()
+                ? removeTheVideoInStorage()
+                : handleOnPress("save")
+            }
           >
             <Ionicons name="bookmark" color={colors.gray[200]} size={16} />
             <Text
@@ -95,7 +178,7 @@ export default function DropdownMenu({
                 color: colors.gray[200],
               }}
             >
-              Save
+              {videoExistInStorage() ? "Unsave" : "Save"}
             </Text>
           </TouchableOpacity>
           {isOwner && (
