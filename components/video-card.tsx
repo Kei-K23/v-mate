@@ -5,7 +5,7 @@ import { VideoType } from "@/types";
 import { AVPlaybackStatus, ResizeMode, Video } from "expo-av";
 import React, { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import DropdownMenu from "./dropdown-menu";
+import ActionsGroup from "./actions-group";
 
 type VideoCardProps = {
   item: VideoType;
@@ -95,13 +95,6 @@ export default function VideoCard({
             </Text>
           </View>
         </View>
-
-        <DropdownMenu
-          isOwner={item.creator.accountId === userId}
-          video={item}
-          onRefresh={onRefresh}
-          videosRefreshFn={videosRefreshFn}
-        />
       </View>
 
       {play ? (
@@ -152,6 +145,12 @@ export default function VideoCard({
           />
         </TouchableOpacity>
       )}
+      <ActionsGroup
+        isOwner={item.creator.accountId === userId}
+        video={item}
+        onRefresh={onRefresh}
+        videosRefreshFn={videosRefreshFn}
+      />
     </View>
   );
 }

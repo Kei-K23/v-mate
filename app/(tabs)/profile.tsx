@@ -139,7 +139,7 @@ export default function ProfileScreen() {
               >
                 <Text
                   style={{
-                    color: "#db2121",
+                    color: colors.danger[100],
                   }}
                 >
                   Leave
@@ -217,7 +217,8 @@ export default function ProfileScreen() {
                   Videos
                 </Text>
               </View>
-              <View
+              <TouchableOpacity
+                onPress={() => router.push("/(tabs)/bookmark")}
                 style={{
                   display: "flex",
                   justifyContent: "center",
@@ -243,7 +244,7 @@ export default function ProfileScreen() {
                 >
                   Bookmark
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         )}
