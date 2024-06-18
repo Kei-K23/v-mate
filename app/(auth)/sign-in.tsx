@@ -12,21 +12,11 @@ import { UserSignIn } from "@/types";
 import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import {
-  Alert,
-  Image,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  ToastAndroid,
-  View,
-} from "react-native";
+import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export default function SignInScreen() {
   const showAlert = useShowErrorAlert();
 
-  // TODO : Check the state is working fine
   const [signIn, setSignIn] = useState<UserSignIn>({
     email: "",
     password: "",
@@ -35,7 +25,6 @@ export default function SignInScreen() {
   const router = useRouter();
 
   const handleOnPress = async () => {
-    // TODO : handle proper error
     if (signIn.email === "" || signIn.password === "") {
       showAlert({
         message: "Please fill in all fields!",
@@ -51,19 +40,17 @@ export default function SignInScreen() {
       });
       // set to async storage
       storeData(storageKeys.session, session);
+
+      // clear input fields
+      setSignIn({
+        email: "",
+        password: "",
+      });
       router.push("/(tabs)/home");
     } catch (e) {
-      console.log(e);
-
-      if (Platform.OS === "android") {
-        ToastAndroid.show(
-          "Something went wrong when signing up",
-          ToastAndroid.BOTTOM
-        );
-      }
-      if (Platform.OS === "ios") {
-        Alert.alert("Error", "Something went wrong when signing up");
-      }
+      showAlert({
+        message: "Something went wrong when signing up",
+      });
     } finally {
       setIsStartTransition(false);
     }

@@ -1,5 +1,6 @@
 import { icons } from "@/constants";
 import { colors } from "@/constants/colors";
+import { sizes } from "@/constants/sizes";
 import { VideoType } from "@/types";
 import { AVPlaybackStatus, ResizeMode, Video } from "expo-av";
 import React, { useState } from "react";
@@ -66,6 +67,7 @@ export default function VideoCard({ item }: VideoCardProps) {
             <Text
               style={{
                 color: "#fff",
+                fontSize: sizes.textBold,
               }}
               numberOfLines={1}
             >
@@ -74,6 +76,7 @@ export default function VideoCard({ item }: VideoCardProps) {
             <Text
               style={{
                 color: colors.gray[100],
+                fontWeight: "800",
               }}
               numberOfLines={1}
             >

@@ -5,8 +5,8 @@ import { colors } from "@/constants/colors";
 import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
 import useShowErrorAlert from "@/hooks/show-error-alert";
-import { createNewVideo, getSignInUser } from "@/lib/appwrite";
-import { CreateVideoType } from "@/types";
+import { createNewVideo, getSignInUser, getUser } from "@/lib/appwrite";
+import { CreateVideoType, UserType } from "@/types";
 import { ResizeMode, Video } from "expo-av";
 import { getDocumentAsync } from "expo-document-picker";
 import { router } from "expo-router";
@@ -19,7 +19,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Models } from "react-native-appwrite";
 
 export default function CreateScreen() {
   const showAlert = useShowErrorAlert();
@@ -30,8 +29,7 @@ export default function CreateScreen() {
     thumbnail: null,
     description: "",
   });
-  const [signInUser, setSignInUser] =
-    useState<Models.User<Models.Preferences>>();
+  const [signInUser, setSignInUser] = useState<UserType>();
 
   const handleOnPress = async () => {
     if (
@@ -62,6 +60,13 @@ export default function CreateScreen() {
       showAlert({
         message: "Success! Created new video!",
         title: "Success",
+      });
+      setCreateVideo({
+        title: "",
+        tag: "",
+        video: null,
+        thumbnail: null,
+        description: "",
       });
       router.replace("/(tabs)/home");
     } catch (e: any) {
@@ -112,7 +117,8 @@ export default function CreateScreen() {
       try {
         const singInUserData = await getSignInUser();
 
-        setSignInUser(singInUserData);
+        const user = await getUser(singInUserData.$id);
+        setSignInUser(user);
       } catch (e: any) {
         showAlert({
           message: "Error when fetching user information",
@@ -121,6 +127,18 @@ export default function CreateScreen() {
     };
 
     fetchData();
+
+    return () => {
+      // TODO: check here
+      // cleanup the fields when component is destroyed
+      setCreateVideo({
+        title: "",
+        tag: "",
+        video: null,
+        thumbnail: null,
+        description: "",
+      });
+    };
   }, []);
 
   return (

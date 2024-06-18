@@ -12,21 +12,11 @@ import { UserSignUp } from "@/types";
 import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import {
-  Alert,
-  Image,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  ToastAndroid,
-  View,
-} from "react-native";
+import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export default function SignUpScreen() {
   const showAlert = useShowErrorAlert();
   const router = useRouter();
-  // TODO : Check the state is working fine
   const [signUp, setSignUp] = useState<UserSignUp>({
     username: "",
     email: "",
@@ -36,7 +26,6 @@ export default function SignUpScreen() {
   const [isStartTransition, setIsStartTransition] = useState<boolean>(false);
 
   const handleOnPress = async () => {
-    // TODO : handle proper error
     if (
       signUp.email === "" ||
       signUp.password === "" ||
@@ -49,12 +38,9 @@ export default function SignUpScreen() {
     }
 
     if (signUp.password !== signUp.confirmPassword) {
-      if (Platform.OS === "android") {
-        ToastAndroid.show("Password doesn't match", ToastAndroid.BOTTOM);
-      }
-      if (Platform.OS === "ios") {
-        Alert.alert("Error", "Password doesn't match");
-      }
+      showAlert({
+        message: "Password doesn't match",
+      });
       return;
     }
 
@@ -71,6 +57,14 @@ export default function SignUpScreen() {
 
       // set to async storage
       storeData(storageKeys.session, session);
+
+      // clear input fields
+      setSignUp({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
 
       router.push("/(tabs)/home");
     } catch (e: any) {
