@@ -3,19 +3,16 @@ import { DocumentPickerAsset } from 'expo-document-picker';
 import { Account, Avatars, Client, Databases, ID, ImageGravity, Query, Storage } from 'react-native-appwrite';
 
 const appwriteConfig = {
-    endpoint: "https://cloud.appwrite.io/v1",
-    platform: "com.kei.vmate",
-    projectId: "666d040d003a724c06a7",
-    databaseId: "666d0545000423662767",
-    userCollectionId: "666d05670019a010abcf",
-    videoCollectionId: "666d05970032709e0e44",
-    storageId: "666d07f8003a81b97319"
+    endpoint: process.env.EXPO_PUBLIC_ENDPOINT!,
+    platform: process.env.EXPO_PUBLIC_PLATFORM!,
+    projectId: process.env.EXPO_PUBLIC_PROJECT_ID!,
+    databaseId: process.env.EXPO_PUBLIC_DATABASE_ID!,
+    userCollectionId: process.env.EXPO_PUBLIC_USER_COLLECTION_ID!,
+    videoCollectionId: process.env.EXPO_PUBLIC_VIDEO_COLLECTION_ID!,
+    storageId: process.env.EXPO_PUBLIC_STORAGE_ID!
 }
 
 const {
-    endpoint,
-    platform,
-    projectId,
     databaseId,
     userCollectionId,
     videoCollectionId,
