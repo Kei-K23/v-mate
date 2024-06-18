@@ -8,8 +8,13 @@ import { sizes } from "@/constants/sizes";
 import { defaultStyles } from "@/constants/styles";
 import useShowErrorAlert from "@/hooks/show-error-alert";
 import useFetchListData from "@/hooks/useFetchListData";
-import { getAllVideos, getLatestVideos, getSignInUser } from "@/lib/appwrite";
-import { VideoType } from "@/types";
+import {
+  getAllVideos,
+  getLatestVideos,
+  getSignInUser,
+  getUser,
+} from "@/lib/appwrite";
+import { UserType, VideoType } from "@/types";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -27,6 +32,8 @@ export default function HomeScreen() {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [signInUser, setSignInUser] =
     useState<Models.User<Models.Preferences>>();
+  const [currentUser, setCurrentUser] = useState<UserType>();
+
   const { data: latestVideos, refreshFn: latestVideosRefreshFn } =
     useFetchListData({
       fn: getLatestVideos,
@@ -48,6 +55,8 @@ export default function HomeScreen() {
         const singInUserData = await getSignInUser();
 
         setSignInUser(singInUserData);
+        const user = await getUser(singInUserData.$id);
+        setCurrentUser(user);
       } catch (e: any) {
         showAlert({
           message: "Error when fetching user information",
@@ -71,7 +80,14 @@ export default function HomeScreen() {
     >
       <FlatList
         data={videos}
-        renderItem={({ item }) => <VideoCard item={item} />}
+        renderItem={({ item }) => (
+          <VideoCard
+            item={item}
+            userId={currentUser?.accountId!}
+            onRefresh={onRefresh}
+            videosRefreshFn={videosRefreshFn}
+          />
+        )}
         ListHeaderComponent={() => (
           <View
             style={{

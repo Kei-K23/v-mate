@@ -226,3 +226,18 @@ export const createNewVideo = async ({ title, tag, thumbnail, video, userId, des
         throw new Error("Error when creating video");
     }
 }
+
+export const deleteTheVideo = async (id: string) => {
+    try {
+
+        await databases.deleteDocument(
+            databaseId,
+            videoCollectionId,
+            id
+        );
+
+    } catch (e) {
+        console.log(e);
+        throw new Error("Error when deleting video");
+    }
+}

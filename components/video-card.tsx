@@ -5,11 +5,20 @@ import { VideoType } from "@/types";
 import { AVPlaybackStatus, ResizeMode, Video } from "expo-av";
 import React, { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import DropdownMenu from "./dropdown-menu";
 
 type VideoCardProps = {
   item: VideoType;
+  userId: string;
+  onRefresh: (fn: () => Promise<void>) => Promise<void>;
+  videosRefreshFn: () => Promise<void>;
 };
-export default function VideoCard({ item }: VideoCardProps) {
+export default function VideoCard({
+  item,
+  userId,
+  onRefresh,
+  videosRefreshFn,
+}: VideoCardProps) {
   const [play, setPlay] = useState(false);
 
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
@@ -33,6 +42,7 @@ export default function VideoCard({ item }: VideoCardProps) {
     >
       <View
         style={{
+          position: "relative",
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
@@ -68,8 +78,9 @@ export default function VideoCard({ item }: VideoCardProps) {
               style={{
                 color: "#fff",
                 fontSize: sizes.textBold,
+                width: 240,
               }}
-              numberOfLines={1}
+              numberOfLines={2}
             >
               {item.title}
             </Text>
@@ -85,16 +96,12 @@ export default function VideoCard({ item }: VideoCardProps) {
           </View>
         </View>
 
-        <View>
-          <Image
-            source={icons.menu}
-            resizeMode="contain"
-            style={{
-              width: 17,
-              height: 17,
-            }}
-          />
-        </View>
+        <DropdownMenu
+          isOwner={item.creator.accountId === userId}
+          id={item.$id}
+          onRefresh={onRefresh}
+          videosRefreshFn={videosRefreshFn}
+        />
       </View>
 
       {play ? (
